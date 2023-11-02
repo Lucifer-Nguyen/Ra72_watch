@@ -1,0 +1,25 @@
+
+.body{
+    margin: 0px auto;
+    max-width: 1400px;
+    padding-top: 50px;
+  }
+
+.product {
+    text-align: center;
+    width: 30%;
+    margin: auto;
+    display: inline-block;
+    border: 1xp solid #eee;
+    box-shadow: 0 2px 2px #ccc;
+    padding: 20px;
+
+}
+
+.abc{
+    margin-top: 100px;
+}
+
+img{
+    width: 100%;
+}
