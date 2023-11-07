@@ -8,18 +8,20 @@ import {
 } from "@ant-design/icons";
 import { Navigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { deleteAccount, getAccount } from "../apis/AccountApi";
+import { deleteAccount, getAccount, getProduct } from "../apis/AccountApi";
 import UserModal from "./AccountModal";
 
 interface DataType {
   id: string;
-  username: string;
-  fullName: string;
-  email: string;
-  address: string;
+  name: string;
+  image: string;
+  gender: string;
+  productManufacturing: string;
+  productType: string;
+  price: number;
 }
 // delete api/v1/users/12
-const AccountList: React.FC = () => {
+const ProductList: React.FC = () => {
   const [data, setData] = React.useState([]);
   const { confirm } = Modal;
   const dispatch = useDispatch();
@@ -31,20 +33,29 @@ const AccountList: React.FC = () => {
       key: "id",
     },
     {
-      title: "UserName",
-      dataIndex: "username",
+      title: "Name",
+      dataIndex: "name",
     },
     {
-      title: "FullName",
-      dataIndex: "fullName",
+      title: "Image",
+      dataIndex: "image",
+      render: (url) => <img src={url} alt="" />,
     },
     {
-      title: "Email",
-      dataIndex: "email",
+      title: "Gender",
+      dataIndex: "gender",
     },
     {
-      title: "Address",
-      dataIndex: "address",
+      title: "Manufacturing",
+      dataIndex: "productManufacturing",
+    },
+    {
+      title: "Type",
+      dataIndex: "productType",
+    },
+    {
+      title: "Price",
+      dataIndex: "price",
     },
     {
       title: "Action",
@@ -60,10 +71,12 @@ const AccountList: React.FC = () => {
                   isOpen: true,
                   initValue: {
                     id: record.id,
-                    username: record.username,
-                    fullname: record.fullName,
-                    email: record.email,
-                    address: record.address,
+                    name: record.name,
+                    image: record.image,
+                    gender: record.gender,
+                    productManufacturing: record.productManufacturing,
+                    productType: record.productType,
+                    price: record.price,
                   },
                 },
               });
@@ -94,19 +107,8 @@ const AccountList: React.FC = () => {
       ),
     },
   ];
-  // const [data, getData]: any = useAccountList();
-  // const dispatch = useDispatch();
-  // const showModal = () => {
-  //   dispatch({
-  //     type: "create",
-  //     payload: {
-  //       isOpen: true,
-  //       initValue: {},
-  //     },
-  //   });
-  // };
   const getData = async () => {
-    const response = await getAccount();
+    const response = await getProduct();
     console.log(response);
     setData(response.data);
   };
@@ -115,30 +117,19 @@ const AccountList: React.FC = () => {
   }, []);
   const token = localStorage.getItem("accesstoken");
   //
-  return (
-    // <>
-    //   <UserModal />
-    //   <Flex justify="flex-end" style={{ marginBottom: 20 }}>
-    //     <Button type="primary" icon={<PlusCircleOutlined />} onClick={showModal}>
-    //       ADD
-    //     </Button>
-    //   </Flex>
-    //   <Table columns={columns} dataSource={data} rowKey="id" />
-    // </>
-    token ? (
-      <>
-        <h1 style={{ textAlign: "center" }}>UserList</h1>
-        <Flex justify="flex-end" style={{ marginBottom: "20px" }}>
-          <Button type="primary" icon={<PlusCircleOutlined />}>
-            Add user
-          </Button>
-        </Flex>
-        <Table columns={columns} dataSource={data} rowKey="id" />
-      </>
-    ) : (
-      <Navigate to={"/login"} />
-    )
+  return token ? (
+    <>
+      <h1 style={{ textAlign: "center" }}>ProductList</h1>
+      <Flex justify="flex-end" style={{ marginBottom: "20px" }}>
+        <Button type="primary" icon={<PlusCircleOutlined />}>
+          Add Product
+        </Button>
+      </Flex>
+      <Table columns={columns} dataSource={data} rowKey="id" />
+    </>
+  ) : (
+    <Navigate to={"/login"} />
   );
 };
 
-export default AccountList;
+export default ProductList;

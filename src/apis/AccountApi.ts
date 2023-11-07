@@ -1,9 +1,20 @@
 import { AxiosRequestConfig } from "axios";
 import axiosClient from "./index";
 
-const getAccount = (config: AxiosRequestConfig) => {
-  return axiosClient.get("account/get-all", config);
+const token = localStorage.getItem("accesstoken")
+
+const headers = {
+  'Content-Type': 'application/json',
+  'Authorization': `Bearer ${token}`
+}
+
+const getAccount = () => {
+  return axiosClient.get("account/get-all");
 };
+const getProduct = () => {
+  return axiosClient.get("product/get-all");
+};
+
 const deleteAccount = (id: string) => {
   return axiosClient.delete(`account/${id}`);
 };
@@ -23,4 +34,4 @@ const login = (username: string, password: string) => {
     }
   );
 };
-export { getAccount, addAccount, deleteAccount, login };
+export { getAccount, getProduct, addAccount, deleteAccount, login };

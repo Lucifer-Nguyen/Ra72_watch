@@ -7,6 +7,11 @@ import { useState } from 'react';
 
 function MaleProduct() {
 const [state, setState] = useState<any>([]);
+const abc = () => {
+  return (
+    alert("Bạn đã thêm vào giỏ hàng thành công")
+  )
+}
 
 useEffect(() => {
   const getMaleProducts = async () => {
@@ -25,13 +30,14 @@ useEffect(() => {
 
 
 return (
-  <div className='body'>
+  <div className='body1'>
     {state.map((post: any) => (
         <div className='product'>
           <img src= {post.image} alt="" />
           <h1>{post.name}</h1>
           <h4>{post.productManufacturing}</h4>
           <p>{post.price}</p>
+          <button onClick={abc} type="button" className="btn btn-outline-danger">Thêm vào giỏ hàng</button>
         </div>
     ))}
   </div>

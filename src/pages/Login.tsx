@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Button, Checkbox, Form, Input, Space } from 'antd';
 import '../css/Login.css';
-import { getAccount, login } from "../apis/UserApi";
+import { getAccount, login } from "../apis/AccountApi";
 import { Navigate, useNavigate } from 'react-router-dom';
 
 
@@ -13,14 +13,17 @@ type FieldType = {
 const LoginPage: React.FC = () => {
 
   const navigate = useNavigate()
-  const token = localStorage.getItem("access-token");
+  const token = localStorage.getItem("accesstoken");
+
   const onFinish = async (values: any) => {
     console.log('Success:', values); 
     try{ 
       const response = await login(values.username, values.password);
-      localStorage.setItem('access-token', response.data.token);
-      // localStorage.getItem("access-token", response.data.token);
+      if (response.data.token){
+        localStorage.setItem('accesstoken', response.data.token);
+        localStorage.getItem("accesstoken")
       navigate("/admin/account");
+      }
     } catch(err){}
   };
   
@@ -39,9 +42,11 @@ const LoginPage: React.FC = () => {
   //   getAllAccount()
   // }, [])
 
-  return token ? (
-     <Navigate to={"/admin/account"}/> 
-     ):(
+  return ( token ? 
+     <Navigate to={"admin/account"}/> 
+     :
+     <>
+     <h1 style={{marginLeft: "600px"}}>Login</h1>
     <div className='login1'>
       <Form
         name="basic"
@@ -82,6 +87,7 @@ const LoginPage: React.FC = () => {
     
       </Form>
     </div>
+    </>
   )
 };
 
