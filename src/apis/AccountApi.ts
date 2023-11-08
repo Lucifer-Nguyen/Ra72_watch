@@ -11,6 +11,7 @@ const headers = {
 const getAccount = () => {
   return axiosClient.get("account/get-all");
 };
+
 const getProduct = () => {
   return axiosClient.get("product/get-all");
 };
@@ -34,4 +35,17 @@ const login = (username: string, password: string) => {
     }
   );
 };
-export { getAccount, getProduct, addAccount, deleteAccount, login };
+
+const signup = (newAccount: any) => {
+  return axiosClient.post("auth/register",{
+    username: newAccount.username,
+    password: newAccount.password,
+    email: newAccount.email,
+    phoneNumber: newAccount.phoneNumber,
+    address: newAccount.address,
+    fullName: newAccount.fullName,
+
+  })
+}
+
+export { getAccount, getProduct, addAccount, deleteAccount, login, signup };

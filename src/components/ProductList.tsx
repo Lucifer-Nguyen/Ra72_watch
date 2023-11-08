@@ -1,31 +1,45 @@
-import React, { useEffect } from "react";
-import { Button, Flex, Modal, Space, Table, Tag } from "antd";
+import React, { useState } from "react";
+import { Space, Table, Tag, Modal, Button, Flex, notification } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import {
+  DeleteOutlined,
+  EditOutlined,
   ExclamationCircleOutlined,
   PlusCircleOutlined,
-  PlusOutlined,
 } from "@ant-design/icons";
 import { Navigate } from "react-router-dom";
+import {
+  deleteProduct,
+  getProduct,
+  getProductPaging,
+} from "../apis/ProductApi";
+import ProductModal from "./ProductModal";
 import { useDispatch } from "react-redux";
-import { deleteAccount, getAccount, getProduct } from "../apis/AccountApi";
-import UserModal from "./AccountModal";
 
 interface DataType {
-  id: string;
+  id: number;
   name: string;
   image: string;
   gender: string;
   productManufacturing: string;
-  productType: string;
   price: number;
+  productType: string;
 }
-// delete api/v1/users/12
+
 const ProductList: React.FC = () => {
   const [data, setData] = React.useState([]);
-  const { confirm } = Modal;
   const dispatch = useDispatch();
-
+  const handleClose = () => {};
+  const showModal = () => {
+    dispatch({
+      type: "create",
+      payload: {
+        isOpen: true,
+        initValue: {},
+      },
+    });
+  };
+  const { confirm } = Modal;
   const columns: ColumnsType<DataType> = [
     {
       title: "ID",
@@ -35,34 +49,45 @@ const ProductList: React.FC = () => {
     {
       title: "Name",
       dataIndex: "name",
+      key: "name",
     },
     {
       title: "Image",
       dataIndex: "image",
-      render: (url) => <img src={url} alt="" />,
+      render: (url) => (
+        <img
+          src={url}
+          alt=""
+          style={{ width: "120px", height: "100px", backgroundSize: "cover" }}
+        />
+      ),
     },
     {
       title: "Gender",
       dataIndex: "gender",
+      key: "gender",
     },
     {
       title: "Manufacturing",
       dataIndex: "productManufacturing",
+      key: "productManufacturing",
     },
     {
       title: "Type",
       dataIndex: "productType",
+      key: "productType",
     },
     {
       title: "Price",
       dataIndex: "price",
+      key: "price",
     },
     {
       title: "Action",
+      key: "action",
       render: (_, record) => (
         <Space size="middle">
           <a
-            href="/"
             onClick={(event: any) => {
               event.preventDefault();
               dispatch({
@@ -82,50 +107,77 @@ const ProductList: React.FC = () => {
               });
             }}
           >
-            Edit
+            <EditOutlined style={{ color: "orange" }} /> Update
           </a>
           <a
-            href="/"
             onClick={(event: any) => {
               event.preventDefault();
               confirm({
                 title: "Confirm",
                 icon: <ExclamationCircleOutlined />,
-                content: "Are you sure???",
-                okText: "OK",
+                content: "Are you sure",
+                okText: "Ok",
                 cancelText: "Cancel",
                 onOk: async () => {
-                  await deleteAccount(record.id);
-                  await getData();
+                  console.log(record);
+                  await deleteProduct(record.id);
+                  notification.warning({
+                    message: "Deleted",
+                    description: "Product has been removed",
+                    duration: 3,
+                    placement: "bottomRight",
+                  });
+                  getData();
                 },
+                onCancel: () => {},
               });
             }}
           >
-            Delete
+            <DeleteOutlined style={{ color: "red" }} /> Delete
           </a>
         </Space>
       ),
     },
   ];
-  const getData = async () => {
-    const response = await getProduct();
-    console.log(response);
-    setData(response.data);
+  const [total, setTotal] = React.useState(0);
+  const getData = async (page: number = 1) => {
+    const { data, total } = await getProductPaging({
+      productTypes: ["Products"],
+      pageSize: 2,
+      pageNumber: page,
+    });
+    setData(data);
+    setTotal(total);
   };
   React.useEffect(() => {
-    getData();
+    getData(1);
   }, []);
   const token = localStorage.getItem("accesstoken");
-  //
+  const handleChangePage = async (page: number) => {
+    await getData(page);
+  };
   return token ? (
     <>
-      <h1 style={{ textAlign: "center" }}>ProductList</h1>
+      <ProductModal getData={getData} />
       <Flex justify="flex-end" style={{ marginBottom: "20px" }}>
-        <Button type="primary" icon={<PlusCircleOutlined />}>
-          Add Product
+        <Button
+          type="primary"
+          icon={<PlusCircleOutlined />}
+          onClick={showModal}
+        >
+          Add
         </Button>
       </Flex>
-      <Table columns={columns} dataSource={data} rowKey="id" />
+      <Table
+        columns={columns}
+        dataSource={data}
+        rowKey="id"
+        pagination={{
+          pageSize: 2,
+          total: total,
+          onChange: handleChangePage,
+        }}
+      />
     </>
   ) : (
     <Navigate to={"/login"} />

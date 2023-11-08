@@ -24,7 +24,7 @@ const AdminLayout: React.FC = () => {
     {
       key: "2",
       icon: React.createElement(ShopOutlined),
-      label: "Product manager",
+      label: "Product",
       onClick: () => {
         navigate("/admin/product");
       },

@@ -13,11 +13,16 @@ import FeMaleProduct from "../components/FeMale";
 import Layout from "../Layout";
 import Product from "../components/Product";
 import ProductList from "../components/ProductList";
+import SignUp from "../pages/SignUp";
 
 export const router = createBrowserRouter([
   {
     path: "/login",
     element: <LoginPage />,
+  },
+  {
+    path: "/signup",
+    element: <SignUp />,
   },
   {
     path: "/",
